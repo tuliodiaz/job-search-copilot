@@ -1,8 +1,10 @@
 # Canonical shape of a per-application status.yaml (lives at
 # vault/companies/<company>/applications/<role--date>/status.yaml).
 # schema_version is present from the first record so a later field rename can migrate old records.
-# This _schemas/ folder is reference only — it is NOT an application; the file is created by the
-# capture-posting flow when a lead is first captured.
+#
+# This is ENGINE REFERENCE, not vault scaffolding — it lives under .claude/config/ precisely so it is
+# NEVER copied into a client's vault. The actual file is created by the capture-posting flow when a
+# lead is first captured.
 schema_version: 1
 
 stage: lead            # lead|assessing|drafting|ready|applied|screen|interview|offer|rejected|withdrawn

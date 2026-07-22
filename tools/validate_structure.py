@@ -207,7 +207,7 @@ def check_templates_and_config() -> None:
         ".claude/templates/profile/preferences.md",
         ".claude/templates/company-registry.yaml",
         ".claude/templates/playbook-notes.md",
-        ".claude/templates/_schemas/status.example.yaml",
+        ".claude/config/status.schema.yaml",
         ".claude/config/defaults.yaml",
     ]
     for r in required:
@@ -216,14 +216,34 @@ def check_templates_and_config() -> None:
             fail(f"missing required engine file: {r}")
     for r in [".claude/config/defaults.yaml",
               ".claude/templates/company-registry.yaml",
-              ".claude/templates/_schemas/status.example.yaml"]:
+              ".claude/config/status.schema.yaml"]:
         p = os.path.join(ROOT, r)
         if os.path.isfile(p) and "schema_version" not in read(p):
             fail(f"{r}: missing schema_version (format commitment)")
     ok()
 
 
-# --- Check 6: CLAUDE.md exists and is the single source of the invariants -----------------------
+# --- Check 6: templates/ contains ONLY vault scaffolding (no engine reference can leak) ----------
+def check_templates_are_vault_only() -> None:
+    """`.claude/templates/` is copied verbatim into the client's vault by onboard, so it must contain
+    ONLY vault-appropriate scaffolding. Anything else (engine reference, schemas, docs) would leak
+    into every client's private vault. The vault's only top-level entities are profile/, companies/,
+    recruiters/, company-registry.yaml, playbook-notes.md."""
+    base = os.path.join(CLAUDE, "templates")
+    allowed = {"profile", "companies", "recruiters",
+               "company-registry.yaml", "playbook-notes.md"}
+    if os.path.isdir(base):
+        for entry in sorted(os.listdir(base)):
+            if entry.startswith("."):
+                continue
+            if entry not in allowed:
+                fail(f".claude/templates/{entry}: not vault scaffolding. templates/ is copied verbatim "
+                     f"into the client's vault, so engine reference material must live elsewhere "
+                     f"(e.g. .claude/config/).")
+    ok()
+
+
+# --- Check 7: CLAUDE.md exists and is the single source of the invariants -----------------------
 def check_claude_md() -> None:
     p = os.path.join(ROOT, "CLAUDE.md")
     if not os.path.isfile(p):
@@ -243,6 +263,7 @@ def main() -> int:
     check_element_kind("agents", "agent", lambda p: os.path.splitext(os.path.basename(p))[0])
     check_recipes()
     check_templates_and_config()
+    check_templates_are_vault_only()
     check_claude_md()
 
     print(f"ran {checks} check groups over .claude/\n")
