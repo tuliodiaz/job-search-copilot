@@ -1,0 +1,5 @@
+# OPTIONAL derived index: fast company -> ATS lookup, plus not-yet-pursued targets.
+# This is a CACHE. The canonical source for a company's facts is its own
+# companies/<company>/company.yaml. Rebuildable from those; never the source of truth.
+schema_version: 1
+companies: {}

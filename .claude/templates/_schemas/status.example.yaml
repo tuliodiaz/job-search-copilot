@@ -1,0 +1,25 @@
+# Canonical shape of a per-application status.yaml (lives at
+# vault/companies/<company>/applications/<role--date>/status.yaml).
+# schema_version is present from the first record so a later field rename can migrate old records.
+# This _schemas/ folder is reference only — it is NOT an application; the file is created by the
+# capture-posting flow when a lead is first captured.
+schema_version: 1
+
+stage: lead            # lead|assessing|drafting|ready|applied|screen|interview|offer|rejected|withdrawn
+role: ""
+company: ""
+created: ""            # ISO date, e.g. 2026-07-22
+source: "direct"       # "direct" or "recruiters/<id>" for a recruiter-sourced lead
+
+security_disposition: null   # set ONCE by analyze-posting: clean|trap|benign|unresolved
+
+fit:
+  score: null          # 0-100
+  verdict: null        # apply|stretch|skip
+  bands: null          # snapshot of fit_bands in force when scored (keeps scores comparable over time)
+
+timeline: []           # [{date, event}]
+contacts: []           # [{name, role, channel}]  (people the CLIENT contacts; engine never messages)
+next_action: ""
+next_action_date: ""   # ISO date; /status surfaces this when overdue
+docs: []               # rendered artifacts, e.g. docs/resume.pdf

@@ -1,0 +1,66 @@
+# BUILD — how this engine is written and validated
+
+This is the **build discipline** for contributors (human or agent). It is distinct from:
+- **README.md** — the design *rationale* (why the system is shaped this way). Human-only; nothing at
+  runtime reads it.
+- **CLAUDE.md** — the runtime *invariants*, auto-loaded into every session. The single source of
+  truth for the rules the agent obeys.
+
+## Two hard conventions
+
+1. **Runtime files are self-contained; they never link to each other or to SYSTEM.md.**
+   Each command / skill / agent / recipe is loaded on its own, so it must be complete on its own. The
+   *element graph* (which command routes to which skill, etc.) is expressed as structured
+   **frontmatter**, not prose links, and `tools/validate_structure.py` resolves it on every run — a
+   broken reference fails the build instead of rotting silently. Global rules are stated **once** in
+   CLAUDE.md and assumed everywhere; they are not restated per file.
+
+2. **We ship no recipe we have not verified at 100%.**
+   A recipe is a *verified* artifact: "I ran this against the live platform and it worked; here is the
+   readback proof and the date." That cannot come from a model's memory. Until a platform recipe is
+   verified live by a human, it does not exist in the repo. The validator enforces this: a recipe
+   with a `last_verified` date but no `verified_by` proof fails the build; the only other allowed
+   value is `last_verified: never`.
+
+## Frontmatter contract
+
+- **command** — `name`, `kind: command`, `route_kind: skill|agent|recipe|vault`, `route_target`
+  (omit for `vault`).
+- **skill** — `name` (must equal the folder name), `kind: skill`.
+- **agent** — `name` (must equal the filename), `kind: agent`.
+- **recipe** — `last_verified` (a date **with** `verified_by`, or `never`), plus a `Self-check` block
+  in the body.
+
+## Validating the structure (deterministic, offline)
+
+```
+python3 tools/validate_structure.py
+```
+
+Exit 0 = the engine graph is consistent, templates/config are schema-pinned, no cross-links, no
+untested-but-dated recipes. This runs with no network and no agent — it is the backbone of "a fresh
+pull works out of the box."
+
+## Acceptance test — the real bar
+
+Structural validity is necessary but not sufficient. The real bar is behavioral: **a fresh agent,
+given only a clean pull of this repo, behaves as architected.** The agreed cadence:
+
+1. Build one thin slice (see below).
+2. `python3 tools/validate_structure.py` passes.
+3. Spin a **new agent in a new folder from a clean pull** and confirm it does exactly what the slice
+   specifies — no more, no less.
+4. **If the agent deviates from the architecture, stop and fix the engine before adding anything.**
+
+### Slice status
+- [x] **Slice 0** — skeleton, CLAUDE.md, validator, fixtures.
+- [x] **Slice 1** — `/onboard` + vault templates + config. *Bar: fresh pull → `/onboard` → a valid
+  `vault/` with the profile populated, and nothing written outside `vault/`.*
+- [ ] **Slice 2** — security scanner script (+ tests) + `/lead` + capture-posting. *Bar: a poisoned
+  posting is flagged and fails closed.*
+- [ ] **Slice 3** — `/apply` (analyze + fit-assessor + pursue gate) + `tailor-resume` + renderer.
+  *Bar: stops at the pursue gate; drops an ungrounded claim.*
+- [ ] **Slice 4** — one live-verified platform recipe (find-jobs + submit). *Bar: recipe passes its
+  own self-check against the live platform, with `verified_by` proof.*
+
+Do not start a slice until the previous one clears its bar.

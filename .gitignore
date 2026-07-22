@@ -1,0 +1,15 @@
+# The vault is the client's PRIVATE, cumulative record — never committed to the engine repo.
+vault/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Python / tooling artifacts
+__pycache__/
+*.pyc
+.venv/
+venv/

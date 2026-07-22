@@ -1,0 +1,11 @@
+# Engine defaults. Read-only at runtime; changed only as deliberate "build the tool" work.
+# schema_version pins the shape of this file so a later change can be migrated safely.
+schema_version: 1
+
+# Fit score bands currently in force.
+# Every fit score records the band set active when it was assigned, so a score stays comparable
+# across time even if these move. A bare number is never compared across different band sets.
+fit_bands:
+  apply_min: 70      # score >= 70        -> apply  (recommended)
+  stretch_min: 45    # 45 <= score < 70   -> stretch (judgment call)
+                     # score < 45         -> skip
