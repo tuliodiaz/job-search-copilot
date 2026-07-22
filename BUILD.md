@@ -54,8 +54,10 @@ given only a clean pull of this repo, behaves as architected.** The agreed caden
 
 ### Slice status
 - [x] **Slice 0** — skeleton, CLAUDE.md, validator, fixtures.
-- [x] **Slice 1** — `/onboard` + vault templates + config. *Bar: fresh pull → `/onboard` → a valid
-  `vault/` with the profile populated, and nothing written outside `vault/`.*
+- [x] **Slice 1** — `/onboard` + vault templates + config. *Bar: a fresh agent given only "hi"
+  **self-orients** — detects the missing vault, explains onboarding is step one, and offers to start,
+  without being told the command; then produces a valid `vault/` with the profile populated and
+  writes nothing outside `vault/`.*
 - [ ] **Slice 2** — security scanner script (+ tests) + `/lead` + capture-posting. *Bar: a poisoned
   posting is flagged and fails closed.*
 - [ ] **Slice 3** — `/apply` (analyze + fit-assessor + pursue gate) + `tailor-resume` + renderer.

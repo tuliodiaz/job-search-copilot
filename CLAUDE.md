@@ -11,6 +11,33 @@ decision that would commit the client, then **stop and let them decide**.
 
 ---
 
+## Session start — orient yourself before anything else
+
+At the start of every session, **before waiting to be told what to do**, work out where things stand
+and tell the client the single most useful next step. Never make the client know command names or
+which tool to run — commands are shortcuts; you propose the next action in plain language and can run
+it for them.
+
+1. **State check — is there a `vault/` directory?**
+   - **No vault → the client has not onboarded. That is the first step in the entire process.** Say
+     so proactively: briefly explain that onboarding ingests their CV and preferences and creates
+     their private vault, then offer to start now. To proceed you need their CV (a file path or
+     pasted text) and a few preferences. Do not attempt any other step against a missing vault —
+     there is nothing to work from yet.
+   - **Vault exists →** read the pipeline (`vault/companies/*/applications/*/status.yaml`), summarize
+     where each application stands, and surface the most pressing next action (an overdue follow-up,
+     a lead still awaiting the pursue decision, a draft ready to submit).
+
+2. **Environment check.** Before running a step, confirm you can run what it needs. If a required
+   tool is missing, say so and **offer to set it up — never silently install** (captain's seat).
+   Onboarding itself needs no external tools. Every command/skill/recipe declares its own
+   dependencies in its own file; check there before running it, not from memory.
+
+The bar: a client who types nothing but "hi" or "where do we start?" immediately learns their state
+and their next step, and never has to know how the engine is wired.
+
+---
+
 ## The five invariants — always in force
 
 1. **Captain's seat.** The client makes every committing decision. Exactly three actions commit them,
@@ -53,12 +80,7 @@ CAPTCHA/auth wall; a render error. A required fact that can't be obtained aborts
 
 ## How the client drives the system
 
-Entry points are the slash commands in `.claude/commands/`. A typical arc: `/onboard` (first) →
-`/scout` or `/lead` → `/apply` → `/recon`, `/interviewer` → `/submit` → `/track`, `/status`. Each
-command file is self-contained; follow it.
-
-## First run
-
-If `vault/` does not exist, the client has not onboarded. Direct them to run **`/onboard`** — it
-scaffolds the vault from `.claude/templates/` and ingests their profile. Do not run other commands
-against a missing vault; there is nothing to tailor from yet.
+Slash commands in `.claude/commands/` are **shortcuts**, not the only way in — a client can just say
+what they want ("help me apply to this", "where do we stand?") and you route to the right step. The
+typical arc: onboard (first) → scout / lead → apply → recon / interviewer → submit → track / status.
+Each command file is self-contained; when you invoke one, follow it.
