@@ -1,0 +1,29 @@
+# Canonical shape of a per-company company.yaml
+# (lives at vault/companies/<slug>/company.yaml).
+#
+# This is the CANONICAL source for a company's public, discovered facts — its ATS + board slug and
+# form quirks. It is generic knowledge (not client-private) that lives in the vault only because the
+# engine's files are read-only during a session; it is a candidate for promotion into the engine.
+#
+# ENGINE REFERENCE, not vault scaffolding — it lives under .claude/config/ so it is NEVER copied into
+# a client's vault. The actual file is created by scout-company when a company is first captured.
+#
+# Carries its own last_verified: an ATS/board fact that has not been confirmed live is not trusted
+# blindly (same discipline as a recipe's last-verified).
+schema_version: 1
+
+name: ""            # display name, e.g. "Affirm"
+slug: ""            # canonical slug (the companies/<slug>/ folder key)
+
+ats: "unknown"      # greenhouse | lever | ashby | workday | linkedin | other | unknown
+board:
+  host: ""          # the board host observed live, e.g. boards.greenhouse.io
+  slug: ""          # the board token/handle on that ATS
+  url: ""           # canonical careers/board URL
+  api: ""           # public listing endpoint if one was found and validated live
+
+last_verified: "never"   # ISO date the ATS/board facts above were last confirmed live, or "never"
+verified_by: ""          # short evidence, e.g. "GET <api> -> 200, N jobs" (required once dated)
+
+form_quirks: []     # notes the submit-application recipe needs (per-field gotchas)
+notes: ""

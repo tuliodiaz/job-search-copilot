@@ -69,9 +69,15 @@ given only a clean pull of this repo, behaves as architected.** The agreed caden
   has the auditor judge it a trap, and blocks the injected instruction from influencing anything —
   recording `security_disposition` and telling the client — while a clean posting captures normally.
   Scanner detection stays deterministic; the LLM judgment lives in the auditor.*
-- [ ] **Slice 3** — `/apply` (analyze + fit-assessor + pursue gate) + `tailor-resume` + renderer.
+- [x] **Slice 3 (scout / company capture)** — `/scout` + `scout-company` skill + **live-verified**
+  Greenhouse `find-jobs` recipe + `company.yaml` facts (schema in `.claude/config/`). *Bar: a fresh
+  agent given `/scout affirm` resolves the ATS (Greenhouse), lists Affirm's real open roles via the
+  public API, ranks them by the client's preferences, records `company.yaml`, and writes nothing
+  outside `vault/`.* The Greenhouse `find-jobs` recipe was verified live (2026-07-23) against
+  `boards-api.greenhouse.io/v1/boards/affirm/jobs` before shipping.
+- [ ] **Slice 4** — `/apply` (analyze + fit-assessor + pursue gate) + `tailor-resume` + renderer.
   *Bar: stops at the pursue gate; drops an ungrounded claim.*
-- [ ] **Slice 4** — one live-verified platform recipe (find-jobs + submit). *Bar: recipe passes its
-  own self-check against the live platform, with `verified_by` proof.*
+- [ ] **Slice 5** — platform `submit-application` recipes, verified live per ATS. *Bar: recipe passes
+  its self-check against the live form, with `verified_by` proof; never auto-submits.*
 
 Do not start a slice until the previous one clears its bar.
