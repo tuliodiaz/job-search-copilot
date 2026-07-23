@@ -34,12 +34,18 @@ This is the **build discipline** for contributors (human or agent). It is distin
 ## Validating the structure (deterministic, offline)
 
 ```
-python3 tools/validate_structure.py
+python3 tools/validate_structure.py    # structure: graph resolves, no cross-links, schema-pinned
+python3 tests/test_scanner.py          # behavior: the deterministic scanner's contract
 ```
 
-Exit 0 = the engine graph is consistent, templates/config are schema-pinned, no cross-links, no
-untested-but-dated recipes. This runs with no network and no agent — it is the backbone of "a fresh
-pull works out of the box."
+`validate_structure.py` exit 0 = the engine graph is consistent, templates/config are schema-pinned,
+no cross-links, no untested-but-dated recipes, and `templates/` contains only vault scaffolding. It
+runs with no network and no agent — the backbone of "a fresh pull works out of the box."
+
+`test_scanner.py` proves the one piece of deterministic *behavior* in the engine: clean content
+passes (exit 0), poisoned content is flagged with the expected rules (exit 10), and an unreadable
+file fails closed (exit 2). Deterministic scripts get real tests; recipes and agent judgment are
+proven by the fresh-agent acceptance run.
 
 ## Acceptance test — the real bar
 
@@ -58,8 +64,11 @@ given only a clean pull of this repo, behaves as architected.** The agreed caden
   **self-orients** — detects the missing vault, explains onboarding is step one, and offers to start,
   without being told the command; then produces a valid `vault/` with the profile populated and
   writes nothing outside `vault/`.*
-- [ ] **Slice 2** — security scanner script (+ tests) + `/lead` + capture-posting. *Bar: a poisoned
-  posting is flagged and fails closed.*
+- [x] **Slice 2** — deterministic scanner (+ tests) + injection-auditor agent + `/lead` +
+  capture-posting. *Bar: a fresh agent capturing a poisoned posting runs the scanner, gets flags,
+  has the auditor judge it a trap, and blocks the injected instruction from influencing anything —
+  recording `security_disposition` and telling the client — while a clean posting captures normally.
+  Scanner detection stays deterministic; the LLM judgment lives in the auditor.*
 - [ ] **Slice 3** — `/apply` (analyze + fit-assessor + pursue gate) + `tailor-resume` + renderer.
   *Bar: stops at the pursue gate; drops an ungrounded claim.*
 - [ ] **Slice 4** — one live-verified platform recipe (find-jobs + submit). *Bar: recipe passes its
