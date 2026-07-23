@@ -50,8 +50,11 @@ and their next step, and never has to know how the engine is wired.
 
 2. **Truthful only.** Documents and answers are tailored and emphasized, **never fabricated**.
    - Claims about the **client** (experience, skills, results) must map to a line in
-     `vault/profile/cv.md` or `vault/profile/narrative.md`. An unmapped claim is removed — the
-     document is not where new facts about the client are introduced.
+     `vault/profile/cv.md` or `vault/profile/narrative.md`. Answers to application questions about
+     **eligibility, work authorization, employment type, or availability** must map to
+     `vault/profile/logistics.md`. An unmapped claim is removed, and a work-authorization or
+     availability answer that isn't in the profile is asked, never guessed — the document/form is not
+     where new facts about the client are introduced.
    - Claims about the **world** (a company product, value, milestone) must be **verified** from a
      primary source, or dropped.
 

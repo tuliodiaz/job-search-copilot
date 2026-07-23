@@ -205,6 +205,7 @@ def check_templates_and_config() -> None:
         ".claude/templates/profile/cv.md",
         ".claude/templates/profile/narrative.md",
         ".claude/templates/profile/preferences.md",
+        ".claude/templates/profile/logistics.md",
         ".claude/templates/company-registry.yaml",
         ".claude/templates/playbook-notes.md",
         ".claude/config/status.schema.yaml",
