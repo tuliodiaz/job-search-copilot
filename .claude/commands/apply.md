@@ -18,10 +18,15 @@ Qualify a role and, once the client approves, prepare its application. Usage:
 2. **`fit-assessor` agent** — return `apply | stretch | skip` + a 0-100 score (with its band
    snapshot), a grounded **eligibility** check against `logistics.md`, reasons, and gaps. Record the
    verdict in `status.yaml` (`fit.score`, `fit.verdict`, `fit.bands`).
-3. **⛔ Pursue gate — STOP here.** Surface the verdict, score, eligibility, reasons, and gaps, and let
-   the **client decide** whether to pursue. All three verdicts land here: *skip* halts, *stretch* is a
-   judgment call, *apply* is recommended — **none proceeds to drafting without the client's go-ahead.**
-   If eligibility is `unknown`, ask the client to resolve it before pursuing.
+3. **`company-recon` agent (signals mode)** — a lightweight *company-fit* read from public sources
+   (reputation, employee sentiment, recent **layoffs/stability**, red flags), sourced from the
+   available research recipes. This is company *desirability*, kept separate from the profile-grounded
+   *role* fit; scanned on capture, each signal marked with its source.
+4. **⛔ Pursue gate — STOP here.** Surface the role-fit verdict + score + gaps **and** the company-fit
+   signals together, and let the **client decide** whether to pursue. All three role verdicts land
+   here: *skip* halts, *stretch* is a judgment call, *apply* is recommended — **none proceeds to
+   drafting without the client's go-ahead.** If eligibility is `unknown`, ask the client to resolve it
+   before pursuing.
 
 ## Craft — after the client clears the pursue gate
 Drafting the tailored résumé + cover letter (the `tailor-resume` skill → renderer) happens only after

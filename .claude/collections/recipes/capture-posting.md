@@ -22,9 +22,12 @@ influence). **Pending verification:** the collision / re-capture path (step 4). 
 ## Steps
 
 1. **Obtain the raw posting.**
-   - If `source` is a URL: fetch it. If the fetch fails, record the failure and stop — do not invent
-     posting content (a failed fetch never becomes a fact).
-   - If `source` is a file path: read it.
+   - **If the ATS has a verified single-posting recipe** (e.g. Greenhouse `get-posting`) and you have
+     the job id, prefer it: it returns the role's content **and its application questions** in one
+     structured call — save the questions alongside for the eligibility check and later `/submit`.
+   - Else if `source` is a URL: fetch it. If the fetch fails, record the failure and stop — do not
+     invent posting content (a failed fetch never becomes a fact).
+   - Else if `source` is a file path: read it.
    Save the raw bytes verbatim to `posting.raw.html` in the application folder (created in step 4;
    use a temp location first if needed).
 

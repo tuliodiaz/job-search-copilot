@@ -80,6 +80,12 @@ given only a clean pull of this repo, behaves as architected.** The agreed caden
   score with its band snapshot, runs the **grounded eligibility** check (never inferring work auth —
   flags `unknown` when `logistics.md` is silent), records the verdict in `status.yaml`, and **stops at
   the pursue gate** for the client's decision.*
+- [x] **Company-fit + get-posting** — `company-recon` agent that **sources from a growing collection
+  of research recipes** (`web-search` verified live) rather than hard-coding a source; wired into
+  `/apply` Decide as a company-fit **signals** read at the pursue gate, and exposed standalone via
+  `/recon` (deep mode). Greenhouse `get-posting` (verified) captures a role's application questions.
+  *Bar: at the pursue gate the client sees company signals (e.g. Affirm's Glassdoor rating + recent
+  layoffs) beside role fit; research sources are scanned on capture and provenance-marked.*
 - [ ] **Slice 4b (Craft)** — `tailor-resume` skill + document renderer script. *Bar: after the pursue
   gate, drafts a résumé/cover letter that drops an ungrounded claim (grounding check) and a
   world-claim without a source (verification), then renders. Needs a non-empty `narrative.md`.*

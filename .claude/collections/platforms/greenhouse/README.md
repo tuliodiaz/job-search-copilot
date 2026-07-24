@@ -14,6 +14,8 @@ The platform "brain" and recipe index for Greenhouse-hosted job boards.
 
 ## Recipes here
 - `find-jobs` — list + rank open roles via the public API. **Verified 2026-07-23.**
+- `get-posting` — capture one role incl. its application questions (`?questions=true`). **Verified
+  2026-07-24.**
 - `submit-application` — **not yet built.** A submit recipe is only committed once it has been
   verified live end-to-end (fields mapped, self-check passing). Until then, `/submit` for a
   Greenhouse role falls back to handing the live form to the client.
