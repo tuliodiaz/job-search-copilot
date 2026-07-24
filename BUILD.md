@@ -75,8 +75,14 @@ given only a clean pull of this repo, behaves as architected.** The agreed caden
   public API, ranks them by the client's preferences, records `company.yaml`, and writes nothing
   outside `vault/`.* The Greenhouse `find-jobs` recipe was verified live (2026-07-23) against
   `boards-api.greenhouse.io/v1/boards/affirm/jobs` before shipping.
-- [ ] **Slice 4** — `/apply` (analyze + fit-assessor + pursue gate) + `tailor-resume` + renderer.
-  *Bar: stops at the pursue gate; drops an ungrounded claim.*
+- [x] **Slice 4a (Decide)** — `/apply` + `analyze-posting` skill + `fit-assessor` agent + the pursue
+  gate. *Bar: a fresh agent given a captured lead parses it, returns apply/stretch/skip + a 0-100
+  score with its band snapshot, runs the **grounded eligibility** check (never inferring work auth —
+  flags `unknown` when `logistics.md` is silent), records the verdict in `status.yaml`, and **stops at
+  the pursue gate** for the client's decision.*
+- [ ] **Slice 4b (Craft)** — `tailor-resume` skill + document renderer script. *Bar: after the pursue
+  gate, drafts a résumé/cover letter that drops an ungrounded claim (grounding check) and a
+  world-claim without a source (verification), then renders. Needs a non-empty `narrative.md`.*
 - [ ] **Slice 5** — platform `submit-application` recipes, verified live per ATS. *Bar: recipe passes
   its self-check against the live form, with `verified_by` proof; never auto-submits.*
 
