@@ -30,27 +30,37 @@ can be re-run to refresh the profile.
    external content. However, if it *links out* to external material you fetch, that fetched content
    is an ingestion surface: scan it before use.
 
-3. **Capture the narrative.** Interview the client for what the CV omits — motivations, why they're
-   looking / what they want next, and proudest results **in their own words** — into
-   `vault/profile/narrative.md`. Ask; do not infer. If the client hasn't given a section in their own
-   words yet, leave it marked `(to expand)` rather than paraphrasing the CV as if it were their voice.
-   Together, `cv.md` and `narrative.md` are the sources every later client-claim is grounded against.
+Elicit sections 3–5 in the **prefill-and-confirm** style — do **not** ask a long list of open
+questions all at once. Draft from what you already know, present a compact confirm-or-correct
+checklist, and go section by section so the client is never facing a wall of questions.
 
-4. **Capture preferences.** Record what the client *wants* into `vault/profile/preferences.md`: target
-   roles + seniority (IC vs. management), compensation (current, target, currency preference, how much
-   equity/benefits weigh), location / remote (and any comp threshold that flips it), company
-   size/stage, industries to pursue, industries to avoid (prompt the common ethical/sector avoids even
-   if the answer is "none"), dealbreakers, and links/portfolio. These drive fit scoring.
+3. **Capture the narrative — in the client's voice.** The narrative (`vault/profile/narrative.md`)
+   holds motivations, why they're looking / what they want next, and proudest results. It is a
+   grounding source, so it must be the client's **own words** — do **not** pre-write it for them. You
+   may *suggest 2–3 anchors from the CV* ("wins worth describing in your own words: …") to make it
+   easy to start, but the text is theirs. Anything they don't give stays marked `(to expand)`, never
+   paraphrased from the CV as if it were their voice.
 
-5. **Capture logistics & eligibility.** Record the *facts* that gate eligibility and answer standard
-   application questions into `vault/profile/logistics.md`: **work authorization & citizenship** (per
-   country; sponsorship needed now/future; for cross-border remote, whether it's a work-visa route or
+4. **Capture preferences — draft, then confirm.** Pre-fill `vault/profile/preferences.md` with
+   concrete proposed values inferred from the CV and anything already said — target roles + seniority
+   (IC vs. management), compensation (current, target, currency preference, equity/benefits weight),
+   location / remote (and any comp threshold that flips it), company size/stage, industries to pursue,
+   industries to avoid (prompt the common ethical/sector avoids even if "none"), dealbreakers, and
+   links/portfolio. Present it as a **compact, scannable confirm-or-correct checklist** — confirming
+   is far less work than composing — and prefer tap-to-answer choices for choice-style items. A
+   proposed value is **unconfirmed** until the client accepts it: keep it marked, and never let an
+   unconfirmed guess flow into a document. These drive fit scoring.
+
+5. **Capture logistics & eligibility — ask, never prefill.** Record the *facts* that gate eligibility
+   and answer standard application questions into `vault/profile/logistics.md`, asked as **one short
+   grouped checklist** (not scattered through the conversation): **work authorization & citizenship**
+   (per country; sponsorship now/future; for cross-border remote, work-visa route vs.
    remote-contractor/EOR), **employment type accepted** (FTE / contract / EOR), **availability**
-   (currently employed? notice; earliest start), **confidentiality** (is this a discreet search while
+   (currently employed? notice; earliest start), **confidentiality** (discreet search while
    employed?), and **location logistics** (timezone, willingness to work another timezone's hours,
-   relocation). These are **sensitive** — capture them because applications legitimately need them,
-   store them only in the vault, and never guess a work-authorization or citizenship answer; if the
-   client hasn't said, ask. This is often the most decision-changing information in the whole profile.
+   relocation). These are **sensitive** and are **never pre-filled or guessed** — capture them because
+   applications legitimately need them, store them only in the vault, and if the client hasn't said,
+   ask. Often the most decision-changing part of the profile.
 
 6. **Read it back.** Summarize the captured profile to the client and let them correct it. The
    profile is the source of truth; getting it right here is what prevents fabrication later.
