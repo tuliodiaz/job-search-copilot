@@ -91,8 +91,12 @@ given only a clean pull of this repo, behaves as architected.** The agreed caden
   end-to-end render). *Bar: after the pursue gate, drafts a résumé/cover letter that drops an
   ungrounded claim (grounding) and a sourceless world-claim (verification), voice-checks, then renders
   to an inspectable PDF. Needs a non-empty `narrative.md`.*
-- [ ] **Slice 5** — platform `submit-application` recipes, verified live per ATS. *Bar: recipe passes
-  its self-check against the live form, with `verified_by` proof; never auto-submits.*
+- [~] **Slice 5** — `/submit` + platform `submit-application` recipe (Greenhouse), an adaptive browser
+  procedure driving **chrome-devtools-mcp** (no script, no js). Fills by label from the vault
+  (work-auth from `logistics.md`), validates by readback, **never clicks Submit**; falls back to
+  assisted-manual when the MCP is absent. **`last_verified: never`** — verify against a real form with
+  the MCP connected before stamping. *Bar: fills a live form correctly, stops for the client to
+  CAPTCHA + Submit, never submits, never guesses a required field.*
 
 Do not start a slice until the previous one clears its bar.
 

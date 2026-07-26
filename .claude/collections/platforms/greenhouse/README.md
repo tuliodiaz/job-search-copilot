@@ -16,9 +16,10 @@ The platform "brain" and recipe index for Greenhouse-hosted job boards.
 - `find-jobs` — list + rank open roles via the public API. **Verified 2026-07-23.**
 - `get-posting` — capture one role incl. its application questions (`?questions=true`). **Verified
   2026-07-24.**
-- `submit-application` — **not yet built.** A submit recipe is only committed once it has been
-  verified live end-to-end (fields mapped, self-check passing). Until then, `/submit` for a
-  Greenhouse role falls back to handing the live form to the client.
+- `submit-application` — fill the apply form by label via **chrome-devtools-mcp**, then hand the tab
+  to the client to submit. **`last_verified: never`** — verified only once run against a real form
+  with the MCP connected. Falls back to assisted-manual (grounded answers + `docs/` as a checklist)
+  when the MCP isn't available.
 
 ## Gotchas
 - Some companies host the board on their own domain but still call `boards-api.greenhouse.io` — check
