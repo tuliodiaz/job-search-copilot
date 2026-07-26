@@ -13,12 +13,17 @@ that fit the task. As the collection grows (more verified source recipes), this 
 without changing.
 
 ## The know-how it sources from
-Look in `.claude/collections/recipes/` for the available **research recipes** and use the relevant
-ones. Verified today: **`web-search`** (reputation / stability / red-flag signals). Intended to grow:
-Glassdoor / Blind / Indeed reviews, LinkedIn company data, `github-org-repos`, `web-bundles`,
-`source-capture`, and mobile-app teardown (dispatch `mobile-recon`). If a useful source has **no
-recipe yet**, note it to `vault/playbook-notes.md` for promotion rather than improvising a fragile
-one-off — that is how the collection grows.
+`.claude/collections/` holds **one folder per outside system**, each with a `README.md` indexing its
+recipes. Enumerate those folders and read each README's recipe index to find the **research recipes**
+available, then use the relevant ones. Verified today: **`web/web-search`** (reputation / stability /
+red-flag signals). Intended to grow: Glassdoor / Blind / Indeed reviews, LinkedIn company data,
+`github-org-repos`, `web-bundles`, `source-capture`, and mobile-app teardown. If a useful source has
+**no recipe yet**, note it to `vault/playbook-notes.md` for promotion rather than improvising a
+fragile one-off — that is how the collection grows.
+
+A system's folder holds **everything** about that system, so a source that also serves job discovery
+(e.g. LinkedIn) is found in the same place as its research recipe — do not expect research recipes to
+live in a separate tree.
 
 ## Company info is a company-level asset — gather once, reuse
 The trigger is **intent, not a pipeline slot**: whenever the client makes a company relevant — asking

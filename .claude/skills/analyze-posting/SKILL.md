@@ -15,7 +15,7 @@ once per artifact at capture time and trusted here.
 ## Preconditions
 - The role must already be a captured application (a lead) with `posting.md`, `posting.raw.html`, and
   a `security_disposition` in `status.yaml`. If it is **not** captured yet (e.g. `/apply` was given a
-  bare URL), capture it first via the **capture-posting** recipe (which scans on capture), then
+  bare URL), capture it first via the **capture-posting** skill (which scans on capture), then
   continue.
 - Honor the existing disposition — do not re-scan:
   - `clean` / `benign` → proceed normally.

@@ -106,18 +106,14 @@ def agent_path(name: str) -> str:
 
 
 def recipe_route_resolves(name: str) -> bool:
-    """True if a recipe route target resolves to at least one recipe file. Supports:
-    named recipes ('capture-posting'), platform recipes ('greenhouse/submit-application'),
-    collections-relative targets ('platforms/<ats>/submit-application'), and **family routes** with a
-    '<...>' placeholder — e.g. '/submit' routes to platforms/<ats>/submit-application, which passes as
-    long as >=1 platform provides that recipe. The placeholder becomes a glob wildcard."""
+    """True if a recipe route target resolves to at least one recipe file.
+
+    Collections are **one folder per outside system**: collections/<system>/<recipe>.md. Targets are
+    collections-relative ('greenhouse/submit-application'), and **family routes** may carry a '<...>'
+    placeholder — e.g. '/submit' routes to <ats>/submit-application, which passes as long as >=1
+    system provides that recipe. The placeholder becomes a glob wildcard."""
     pat = re.sub(r"<[^>]+>", "*", name)  # <ats> -> *  (family route)
-    candidates = [
-        os.path.join(CLAUDE, "collections", "recipes", pat + ".md"),          # named recipe
-        os.path.join(CLAUDE, "collections", "platforms", *pat.split("/")) + ".md",  # <platform>/<recipe>
-        os.path.join(CLAUDE, "collections", pat) + ".md",                     # target already includes platforms/…
-    ]
-    return any(glob.glob(c) for c in candidates)
+    return bool(glob.glob(os.path.join(CLAUDE, "collections", *pat.split("/")) + ".md"))
 
 
 def check_commands() -> None:
@@ -180,13 +176,10 @@ def check_element_kind(subdir: str, kind: str, name_from) -> None:
 
 # --- Check 4: recipes are never shipped untested-but-dated --------------------------------------
 def check_recipes() -> None:
-    plat = os.path.join(CLAUDE, "collections", "platforms")
-    named = os.path.join(CLAUDE, "collections", "recipes")
+    coll = os.path.join(CLAUDE, "collections")
     recipe_files: list[str] = []
-    if os.path.isdir(plat):
-        recipe_files += [p for p in md_files(plat) if os.path.basename(p) != "README.md"]
-    if os.path.isdir(named):
-        recipe_files += md_files(named)
+    if os.path.isdir(coll):
+        recipe_files += [p for p in md_files(coll) if os.path.basename(p) != "README.md"]
     for path in sorted(recipe_files):
         fm = parse_frontmatter(path) or {}
         lv = fm.get("last_verified")

@@ -1,20 +1,24 @@
 ---
 name: capture-posting
-kind: recipe
-last_verified: never
+kind: skill
 requires: python3 (standard library only)
 summary: Capture one posting (URL or file) as an application at stage=lead, scanned on capture
+reads: the source posting (URL or file); the relevant collection's platform knowledge
+writes: the application folder — posting.raw.html, posting.md, status.yaml (stage -> lead)
 ---
 
-# Recipe: capture-posting
+# Skill: capture-posting
 
-Capture a single job posting as a new application, scanning it before it can influence anything. This
-is a named recipe called by `/lead`. It writes only under `vault/`.
+Capture a single job posting as a new application, scanning it before it can influence anything.
+Called by `/lead`. It writes only under `vault/`.
 
-`last_verified: never` — verified paths so far (2026-07-23 acceptance runs, agent-driven): **clean
+This is a **skill, not a collection recipe**: it is engine orchestration — it scans, resolves
+collisions, and scaffolds vault structure. The outside-world knowledge it *uses* (how to reach a
+posting on a given system) lives in that system's collection folder.
+
+**Verification status.** Verified paths so far (2026-07-23 acceptance runs, agent-driven): **clean
 capture** and **trap capture** (scan → injection-auditor → disposition, injected instructions had no
-influence). **Pending verification:** the collision / re-capture path (step 4). Stamp a date +
-`verified_by` only once every path below has been confirmed end-to-end against a real agent.
+influence). **Pending verification:** the collision / re-capture path (step 4).
 
 ## Inputs
 - `source` — a posting URL, or a path to a local posting file (e.g. a saved `.html`).
@@ -22,16 +26,15 @@ influence). **Pending verification:** the collision / re-capture path (step 4). 
 ## Steps
 
 1. **Identify the platform, then obtain the raw posting.**
-   - **Identify the platform first.** Match `source` against the recognition key ("How to recognize
-     it") in each `.claude/collections/platforms/<ats>/README.md`. That folder is the only place a
-     platform's endpoints and quirks are recorded — never infer an API from a URL. Record the
-     platform in the company's `company.yaml` so later steps and `/submit` resolve to the same
-     recipes.
-   - **If that platform has a verified single-posting recipe** and you have the job id, prefer it: it
+   - **Identify the system first.** Match `source` against the recognition key ("How to recognize
+     it") in each `.claude/collections/<system>/README.md`. That folder is the only place a system's
+     endpoints and quirks are recorded — never infer an API from a URL. Record it in the company's
+     `company.yaml` so later steps and `/submit` resolve to the same recipes.
+   - **If that system has a verified single-posting recipe** and you have the job id, prefer it: it
      returns the role's content **and its application questions** in one structured call — save the
      questions alongside for the eligibility check and later `/submit`.
-   - **If the platform is not listed**, do not guess its API. Fall back to fetching the URL below, and
-     capture the direction per §"When you're short a capability" so a human can add the platform
+   - **If the system has no collection folder**, do not guess its API. Fall back to fetching the URL
+     below, and capture the direction per §"When you're short a capability" so a human can add the
      folder between hunts.
    - Else if `source` is a URL: fetch it. If the fetch fails, record the failure and stop — do not
      invent posting content (a failed fetch never becomes a fact).

@@ -71,9 +71,13 @@ clauses keep responsibilities from drifting.
   deterministic code.
 - **Holds:** exact commands, field maps, gotchas, and per-recipe a **self-check (validate by
   readback)** and a **last-verified date**, so a rotted recipe is detected, not trusted blindly.
-- **Organized by how a recipe is FOUND:** *platform recipes* discovered by key (job URL host →
-  platform folder); *named recipes* an agent or command calls by name. *(Growth + staleness: §7.)*
-- **Must not:** hold anything about the specific client (vault).
+- **Organized as ONE FOLDER PER OUTSIDE SYSTEM** — `collections/<system>/`, each with a `README.md`
+  "brain" (how to recognize it, its quirks) plus one file per recipe. **Everything about a system
+  lives in its own folder**, so shared know-how (endpoints, selectors, rate limits) is written once
+  and cannot drift between copies. A system that serves two purposes — LinkedIn, which is both job
+  discovery and company research — is still one folder. *(Growth + staleness: §7.)*
+- **Must not:** hold anything about the specific client (vault), or engine orchestration that writes
+  vault structure — that is a **skill** (e.g. `capture-posting`), not outside-world knowledge.
 
 ### Scripts — the deterministic code core
 - **Is:** the small set of real programs kept because a task must be **deterministic** (identical
@@ -106,15 +110,15 @@ clauses keep responsibilities from drifting.
 approves, draft its documents · `/recon` research a company · `/interviewer` profile an interviewer ·
 `/submit` fill an application form and hand off for the client to submit · `/track` log an update ·
 `/status` show the pipeline. *(Routing: `/onboard`→`onboard` skill; `/scout`→`scout-company` skill;
-`/lead`→**capture-posting** recipe; `/apply`→`analyze-posting` + `fit-assessor`, then `tailor-resume`;
-`/recon`→`company-recon` agent; `/interviewer`→`interviewer-recon` agent; `/submit`→platform
+`/lead`→**capture-posting** skill; `/apply`→`analyze-posting` + `fit-assessor`, then `tailor-resume`;
+`/recon`→`company-recon` agent; `/interviewer`→`interviewer-recon` agent; `/submit`→the ATS's
 **submit-application** recipe; `/track` and `/status` act directly on the vault. So the four commands
 backed by neither a skill nor an agent are `/lead`, `/submit`, `/track`, `/status` (`/lead` and
 `/submit` → recipes; `/track` and `/status` → direct vault access).)*
 
 **Skills:** `onboard` · `analyze-posting` (parses the posting **and records the single security
 disposition** for it) · `scout-company` · `site-playbooks` (the discipline for *when* to read platform
-know-how and record per-company facts — the mechanics themselves live in the platform recipes) ·
+know-how and record per-company facts — the mechanics themselves live in the system's collection folder) ·
 `tailor-resume` (draft → ground-check → verify → voice-check → render).
 
 **Agents:** `fit-assessor` (apply/stretch/skip + 0–100) · `company-recon` (orchestrates public-asset
@@ -123,9 +127,11 @@ jadx/apktool, reads manifest/endpoints/SDKs) · `interviewer-recon` (behavioral 
 footprint → coaching) · `injection-auditor` (on a scanner flag, **judges whether the flagged content
 is a genuine trap** — never executes it) · `voice-auditor` (removes AI-writing tells, truthfully).
 
-**Collections:** *platform recipes* (per platform: **find-jobs**, **submit-application**) for
-Greenhouse, Lever, Ashby, Workday, LinkedIn; *named recipes* **capture-posting**, **github-org-repos**,
-**web-bundles**, **source-capture**, **apk-decompile**.
+**Collections:** one folder per outside system, each holding every recipe for that system —
+**find-jobs**, **get-posting**, **submit-application**, **get-company**. Today: Greenhouse, Airtable,
+Rippling, and `web/` (**web-search**). Intended: LinkedIn (job discovery *and* company research, one
+folder), Lever, Ashby, Workday, **github-org-repos**, **web-bundles**, **source-capture**,
+**apk-decompile**.
 
 **Scripts:** **security scanner** (screens untrusted content; feeds `injection-auditor`) ·
 **document renderer** (tailored markdown → PDF).
@@ -154,12 +160,11 @@ job-search/
 │   │   ├── fit-assessor.md  company-recon.md  mobile-recon.md
 │   │   └── interviewer-recon.md  injection-auditor.md  voice-auditor.md
 │   ├── collections/             #  the compounding recipe base (grows with use — §7)
-│   │   ├── platforms/           #    found BY KEY: job URL host → folder
-│   │   │   └── <greenhouse|lever|ashby|workday|linkedin>/
-│   │   │        ├── README.md      #  platform "brain" + index to its recipes
-│   │   │        └── *.md           #  find-jobs, submit-application (each carries a self-check)
-│   │   └── recipes/             #    called BY NAME by an agent or command (flat)
-│   │        └── capture-posting.md  github-org-repos.md  web-bundles.md  source-capture.md  apk-decompile.md
+│   │   └── <system>/            #    ONE FOLDER PER OUTSIDE SYSTEM — all of it lives here
+│   │        ├── README.md          #  the "brain": how to recognize it, quirks, recipe index
+│   │        └── *.md               #  find-jobs, get-posting, submit-application, get-company…
+│   │                               #  (each carries a self-check + last-verified date)
+│   │   #  today: greenhouse/ airtable/ rippling/ web/   — intended: linkedin/ lever/ ashby/ workday/
 │   ├── scripts/                 #  code core — the two deterministic tools
 │   │   ├── scan…                #    security scanner
 │   │   └── render…              #    document renderer
@@ -284,9 +289,9 @@ gate** where the client must decide before the system takes a committing action.
 | Stage | Command | Elements | Writes to memory |
 |---|---|---|---|
 | **Know thyself** | `/onboard` | `onboard` skill ingests CV + preferences | Profile |
-| **Find** | `/scout`, `/lead` | `scout-company` skill + **find-jobs** recipe (board); `/lead` → **capture-posting** recipe (one URL); scanned on capture | Company registry (cache); shortlist; application at `stage=lead` (recruiter-sourced leads record `source: recruiters/<id>`) |
+| **Find** | `/scout`, `/lead` | `scout-company` skill + **find-jobs** recipe (board); `/lead` → **capture-posting** skill (one URL); scanned on capture | Company registry (cache); shortlist; application at `stage=lead` (recruiter-sourced leads record `source: recruiters/<id>`) |
 | **Decide** ⛔ | `/apply` | `analyze-posting` skill (+ scanner/`injection-auditor`); `fit-assessor` agent → **stops at the pursue gate** (apply/stretch/skip all surface here) | Analysis + fit verdict; `security_disposition` |
-| **Prepare** | `/recon`, `/interviewer` | `company-recon` (+ `mobile-recon`), `interviewer-recon`; **named recipes**; scanned on capture | `companies/<company>/research`; insider people (interviewers) → `companies/<company>/people/` |
+| **Prepare** | `/recon`, `/interviewer` | `company-recon` (+ `mobile-recon`), `interviewer-recon`; collection research recipes; scanned on capture | `companies/<company>/research`; insider people (interviewers) → `companies/<company>/people/` |
 | **Craft** | `/apply` (after the pursue gate) | `tailor-resume` skill → grounding + verification checks + `voice-auditor` → renderer script | Draft résumé + cover letter (PDF) |
 | **Apply** ⛔ | `/submit` | `/submit` command → **submit-application** recipe (explore → answer → validate); client does CAPTCHA + Submit | `status.yaml` → applied |
 | **Follow up** | `/track`, `/status` | `/track` and `/status` act directly on `status.yaml`; `/status` **surfaces threads whose `next_action_date` is overdue** | Timeline, contacts, next action |
