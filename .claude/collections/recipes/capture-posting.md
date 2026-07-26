@@ -21,10 +21,18 @@ influence). **Pending verification:** the collision / re-capture path (step 4). 
 
 ## Steps
 
-1. **Obtain the raw posting.**
-   - **If the ATS has a verified single-posting recipe** (e.g. Greenhouse `get-posting`) and you have
-     the job id, prefer it: it returns the role's content **and its application questions** in one
-     structured call — save the questions alongside for the eligibility check and later `/submit`.
+1. **Identify the platform, then obtain the raw posting.**
+   - **Identify the platform first.** Match `source` against the recognition key ("How to recognize
+     it") in each `.claude/collections/platforms/<ats>/README.md`. That folder is the only place a
+     platform's endpoints and quirks are recorded — never infer an API from a URL. Record the
+     platform in the company's `company.yaml` so later steps and `/submit` resolve to the same
+     recipes.
+   - **If that platform has a verified single-posting recipe** and you have the job id, prefer it: it
+     returns the role's content **and its application questions** in one structured call — save the
+     questions alongside for the eligibility check and later `/submit`.
+   - **If the platform is not listed**, do not guess its API. Fall back to fetching the URL below, and
+     capture the direction per §"When you're short a capability" so a human can add the platform
+     folder between hunts.
    - Else if `source` is a URL: fetch it. If the fetch fails, record the failure and stop — do not
      invent posting content (a failed fetch never becomes a fact).
    - Else if `source` is a file path: read it.

@@ -16,6 +16,7 @@ Stdlib only. Run:  python3 tools/validate_structure.py
 Exit code 0 = all checks pass, 1 = at least one failure.
 """
 from __future__ import annotations
+import glob
 import os
 import re
 import sys
@@ -104,12 +105,19 @@ def agent_path(name: str) -> str:
     return os.path.join(CLAUDE, "agents", name + ".md")
 
 
-def recipe_paths(name: str) -> list[str]:
-    # a named recipe, or a platform recipe referenced as "<platform>/<recipe>"
-    return [
-        os.path.join(CLAUDE, "collections", "recipes", name + ".md"),
-        os.path.join(CLAUDE, "collections", "platforms", *name.split("/")) + ".md",
+def recipe_route_resolves(name: str) -> bool:
+    """True if a recipe route target resolves to at least one recipe file. Supports:
+    named recipes ('capture-posting'), platform recipes ('greenhouse/submit-application'),
+    collections-relative targets ('platforms/<ats>/submit-application'), and **family routes** with a
+    '<...>' placeholder — e.g. '/submit' routes to platforms/<ats>/submit-application, which passes as
+    long as >=1 platform provides that recipe. The placeholder becomes a glob wildcard."""
+    pat = re.sub(r"<[^>]+>", "*", name)  # <ats> -> *  (family route)
+    candidates = [
+        os.path.join(CLAUDE, "collections", "recipes", pat + ".md"),          # named recipe
+        os.path.join(CLAUDE, "collections", "platforms", *pat.split("/")) + ".md",  # <platform>/<recipe>
+        os.path.join(CLAUDE, "collections", pat) + ".md",                     # target already includes platforms/…
     ]
+    return any(glob.glob(c) for c in candidates)
 
 
 def check_commands() -> None:
@@ -137,7 +145,7 @@ def check_commands() -> None:
             if not os.path.isfile(agent_path(rt)):
                 fail(f"{rel(path)}: routes to agent '{rt}' but {rel(agent_path(rt))} is missing")
         elif rk == "recipe":
-            if not any(os.path.isfile(p) for p in recipe_paths(rt)):
+            if not recipe_route_resolves(rt):
                 fail(f"{rel(path)}: routes to recipe '{rt}' but no matching recipe file exists")
         else:
             fail(f"{rel(path)}: invalid route_kind {rk!r} (want skill|agent|recipe|vault)")

@@ -84,7 +84,14 @@ CAPTCHA/auth wall; a render error. A required fact that can't be obtained aborts
 ## When you're short a capability
 
 If a task needs something the engine doesn't have yet — a tool, an output format, an unknown platform
-— do **not** edit the engine's files mid-session (they're read-only during a session). Instead:
+— do **not** edit the engine's files mid-session (they're read-only during a session).
+
+**Reach for the existing toolbox first — it is fixed and small:** shell/console, `curl` (public HTTP),
+`python3` (the two deterministic scripts, `scan.py` + `render.py`), and the browser MCP
+(`chrome-devtools-mcp`) for live pages/forms. **Compose new work as a recipe over these tools** —
+growth happens in the recipe collection, not the toolbox. A new script or tool needs the
+determinism/safety justification, and that bar is rarely met: a whole new ATS (Airtable) was added as
+recipes with no new code. When you are still short:
 1. **Classify** what's missing: client entry point → command; multi-step procedure → skill; one
    isolated judgment → agent; "how the outside world works," adaptive → recipe/collection; must be
    **deterministic or a safety gate** → script (not merely because it's hard or uses a browser);
