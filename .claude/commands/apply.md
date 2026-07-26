@@ -18,10 +18,11 @@ Qualify a role and, once the client approves, prepare its application. Usage:
 2. **`fit-assessor` agent** — return `apply | stretch | skip` + a 0-100 score (with its band
    snapshot), a grounded **eligibility** check against `logistics.md`, reasons, and gaps. Record the
    verdict in `status.yaml` (`fit.score`, `fit.verdict`, `fit.bands`).
-3. **`company-recon` agent (signals mode)** — a lightweight *company-fit* read from public sources
-   (reputation, employee sentiment, recent **layoffs/stability**, red flags), sourced from the
-   available research recipes. This is company *desirability*, kept separate from the profile-grounded
-   *role* fit; scanned on capture, each signal marked with its source.
+3. **Ensure company-fit info (gather once, reuse after).** Company reputation is a *company-level*
+   fact, not a per-role one. If `company.yaml`'s `company_fit` is present and fresh, **reuse it**;
+   otherwise gather it via **`company-recon` (signals)** — reputation, employee sentiment, recent
+   **layoffs/stability**, red flags — and cache it in `company.yaml`. This is company *desirability*,
+   kept separate from the profile-grounded *role* fit; sources scanned on capture and marked.
 4. **⛔ Pursue gate — STOP here.** Surface the role-fit verdict + score + gaps **and** the company-fit
    signals together, and let the **client decide** whether to pursue. All three role verdicts land
    here: *skip* halts, *stretch* is a judgment call, *apply* is recommended — **none proceeds to

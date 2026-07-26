@@ -47,7 +47,9 @@ gate in `/apply`, not here.
 6. **Record the company's facts.** Write `vault/companies/<slug>/company.yaml` (canonical: `ats`,
    board `host`/`slug`/`url`/`api`, and its own `last_verified` + `verified_by` for those facts).
    Update the `company-registry.yaml` cache. Use the one company-slug canonicalizer so the company
-   always resolves to the same folder/key.
+   always resolves to the same folder/key. This is also the natural first point to capture the
+   company's **fit read** — run `company-recon` (signals) once and cache it in `company.yaml`'s
+   `company_fit`, so a later `/apply` reuses it instead of re-researching per role.
 
 ## Rules
 - Prefer public ATS APIs. `/scout` may use the client's **own** logged-in browser (e.g. LinkedIn);

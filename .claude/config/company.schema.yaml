@@ -25,5 +25,14 @@ board:
 last_verified: "never"   # ISO date the ATS/board facts above were last confirmed live, or "never"
 verified_by: ""          # short evidence, e.g. "GET <api> -> 200, N jobs" (required once dated)
 
+# Cached company-fit read (reputation / stability / red flags), gathered on demand by company-recon
+# the first time this company becomes relevant, and REUSED across all its roles. Refreshed when stale.
+company_fit:
+  last_verified: "never"   # ISO date the signals below were gathered, or "never"
+  summary: ""              # one-line read
+  green_flags: []          # each: {point, source}   (source saved under _sources/)
+  red_flags: []            # each: {point, source}
+  sources: []              # saved source paths under _sources/
+
 form_quirks: []     # notes the submit-application recipe needs (per-field gotchas)
 notes: ""

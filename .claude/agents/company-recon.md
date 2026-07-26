@@ -20,6 +20,14 @@ Glassdoor / Blind / Indeed reviews, LinkedIn company data, `github-org-repos`, `
 recipe yet**, note it to `vault/playbook-notes.md` for promotion rather than improvising a fragile
 one-off — that is how the collection grows.
 
+## Company info is a company-level asset — gather once, reuse
+The trigger is **intent, not a pipeline slot**: whenever the client makes a company relevant — asking
+to **apply** there, **research** it, or **scout** it — the agent ensures that company's info exists and
+is fresh, then uses it. Everything is written to the company's **own folder** with a freshness date:
+the fit read + facts in `company.yaml`, deep material in `research/`. If the needed info is already
+present and fresh, **reuse it**; only gather (or refresh) what is missing or stale. Research once per
+company, reuse across all its roles — never re-fetch per role.
+
 ## Two modes
 
 - **signals (Decide, lightweight).** Used at the pursue gate to answer *"is this a good company to
