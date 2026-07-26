@@ -81,6 +81,21 @@ off or degrade — never guess**: a *trap* verdict; a scanner/auditor that can't
 failed fetch/tool where the fact was required; a form field you can't map from the vault; a
 CAPTCHA/auth wall; a render error. A required fact that can't be obtained aborts the step.
 
+## When you're short a capability
+
+If a task needs something the engine doesn't have yet — a tool, an output format, an unknown platform
+— do **not** edit the engine's files mid-session (they're read-only during a session). Instead:
+1. **Classify** what's missing: client entry point → command; multi-step procedure → skill; one
+   isolated judgment → agent; "how the outside world works," adaptive → recipe/collection; must be
+   **deterministic or a safety gate** → script (not merely because it's hard or uses a browser);
+   client-specific → vault.
+2. **Solve it for this session only if you safely can**, writing only to the vault (e.g. use an
+   available tool for a one-off) — otherwise hand off. Never fake the capability or its output.
+3. **Capture the direction** to `vault/playbook-notes.md`: what was needed, the element type, how you
+   solved it / what to build, any dependency + how to install it, and how to verify it. A human
+   promotes it into the engine between hunts, so no future session has to re-derive it. (The document
+   renderer, `.claude/scripts/render.py`, is the worked example of a promoted capability.)
+
 ## How the client drives the system
 
 Slash commands in `.claude/commands/` are **shortcuts**, not the only way in — a client can just say

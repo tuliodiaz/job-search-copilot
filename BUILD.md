@@ -86,10 +86,32 @@ given only a clean pull of this repo, behaves as architected.** The agreed caden
   `/recon` (deep mode). Greenhouse `get-posting` (verified) captures a role's application questions.
   *Bar: at the pursue gate the client sees company signals (e.g. Affirm's Glassdoor rating + recent
   layoffs) beside role fit; research sources are scanned on capture and provenance-marked.*
-- [ ] **Slice 4b (Craft)** — `tailor-resume` skill + document renderer script. *Bar: after the pursue
-  gate, drafts a résumé/cover letter that drops an ungrounded claim (grounding check) and a
-  world-claim without a source (verification), then renders. Needs a non-empty `narrative.md`.*
+- [x] **Slice 4b (Craft)** — `tailor-resume` skill + `voice-auditor` + document renderer
+  (`render.py`, HTML+CSS → PDF via headless Chromium, **verified live**: 8 tests incl. a real
+  end-to-end render). *Bar: after the pursue gate, drafts a résumé/cover letter that drops an
+  ungrounded claim (grounding) and a sourceless world-claim (verification), voice-checks, then renders
+  to an inspectable PDF. Needs a non-empty `narrative.md`.*
 - [ ] **Slice 5** — platform `submit-application` recipes, verified live per ATS. *Bar: recipe passes
   its self-check against the live form, with `verified_by` proof; never auto-submits.*
 
 Do not start a slice until the previous one clears its bar.
+
+## Extending the engine when a session was short a capability
+
+Growth is the capture→promote loop (SYSTEM.md §7). **At runtime** the agent never edits the engine —
+it captures the gap to `vault/playbook-notes.md` (see the "capability gap" stanza) and solves the
+one-off in the vault if it safely can. **Between hunts**, a human promotes it:
+
+1. **Classify** with the placement rules — a **script** only if the task must be *deterministic* or is
+   a *safety gate*, not merely because it's hard or uses a browser.
+2. **Build it to the conventions** — self-contained file; **declare dependencies, don't bundle them**
+   (discover the tool at runtime and let the environment check install it, "offer never silently");
+   deterministic scripts get real tests; recipes carry `last_verified` + a self-check and ship only
+   once verified.
+3. **Record the "how" in the file itself** so it's never re-derived — the dependency and its install
+   path live in the code.
+
+The document renderer (`.claude/scripts/render.py`) is the reference example of all three: pure
+deterministic markdown→HTML transform, a **declared** Chromium dependency discovered at runtime (with
+a clear install hint on absence), a pinned inspectable template, and real tests including a live
+end-to-end render.

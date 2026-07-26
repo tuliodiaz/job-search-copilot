@@ -30,10 +30,11 @@ Qualify a role and, once the client approves, prepare its application. Usage:
    before pursuing.
 
 ## Craft — after the client clears the pursue gate
-Drafting the tailored résumé + cover letter (the `tailor-resume` skill → renderer) happens only after
-approval. **This half is not built yet** — until it is, `/apply` performs Decide and stops at the
-pursue gate; drafting is done separately. Drafting also requires a non-empty `narrative.md`, since
-every client-claim is grounded against it.
+Once (and only once) the client approves at the pursue gate, draft via the **`tailor-resume`** skill
+(draft → grounding check → verification → `voice-auditor` → **`render.py`** → PDF). It requires a
+non-empty `narrative.md` (every client-claim is grounded against it) — if it's empty, ask the client
+for a few sentences before drafting. Craft writes only to the vault (`docs/`) and is **not** itself a
+gate; sending the document is the client's action at `/submit`.
 
 ## Rules
 - Never draft before the client clears the pursue gate.
