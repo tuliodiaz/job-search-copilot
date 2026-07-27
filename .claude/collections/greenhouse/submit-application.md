@@ -82,5 +82,24 @@ recipe stale rather than trusting it.
 ## Limits (honest scope)
 Verified as far as **rendered form state**. That the values reach Greenhouse's submit payload is not
 confirmed, because confirming it means submitting a real application — treat that last hop as proven
-only after a real application goes through. **File upload is untested**; `chrome-devtools-mcp` exposes
-`upload_file`, so verify it before relying on it and be ready to hand the upload to the client.
+only after a real application goes through.
+
+## Variant notes (verified 2026-07-27, Nova Credit — emotion/"remix-css" build)
+A newer Greenhouse form (react-select classes `select__*` / `remix-css-*`) behaved differently from
+the older build above. On this variant:
+- **Synthetic events do not open the select.** Dispatching `mousedown`/`keydown` on the combobox is
+  ignored (untrusted events). Use **real MCP clicks**: `click` the field to open it, take a
+  `take_snapshot`, then `click` the option by its uid. Text writes still use the per-field native
+  setter (never `fill`/`fill_form`) — only the *dropdown open + option pick* need real clicks.
+- **Scope option lookups to the field's own menu.** A global `[role=option]` query is polluted by the
+  phone field's country picker (**intl-tel-input** keeps all ~240 country `[role=option]` in the DOM at
+  all times, not just when open). Read options from the target select's `.select__menu` /
+  `aria-controls`, or from a fresh snapshot — an unscoped query mis-selects silently.
+- **The Location (City) field is an async autocomplete** and is the one control that *needs* real typed
+  keystrokes: use MCP `fill` to type, wait for the suggestion list, then `click` the matching
+  suggestion. A native-setter value alone does not register a selection here. (This is the documented
+  exception to "don't use `fill`" — verified no dropped characters on this field.)
+- **File upload works** via `upload_file` on the "Attach" button — but afterward Greenhouse **removes
+  the raw `<input type=file>` from the DOM** and shows the filename in a sibling element, so
+  `input.files` reads empty. **Verify by the visible filename text (and the screenshot), not the
+  input.** (This resolves the prior "file upload untested" note.)
