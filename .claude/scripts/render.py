@@ -33,25 +33,33 @@ import re
 import subprocess
 import sys
 
-RENDERER_VERSION = "1"
+RENDERER_VERSION = "2"
 
 # Pinned, versioned, inspectable templates. ATS-friendly: standard fonts, single column, selectable
 # text, no images. Add a new key to offer another look; never mutate output non-deterministically.
 TEMPLATES = {
     "default": """
-@page { size: Letter; margin: 0.6in 0.7in; }
+@page { size: Letter; margin: 0.55in 0.7in; }
 * { box-sizing: border-box; }
 body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 10.5pt;
-       line-height: 1.42; color: #1a1a1a; margin: 0; }
-h1 { font-size: 20pt; margin: 0 0 2pt; }
-h2 { font-size: 12pt; margin: 14pt 0 6pt; padding-bottom: 2pt; border-bottom: 1px solid #999;
-     text-transform: uppercase; letter-spacing: .04em; }
-h3 { font-size: 11pt; margin: 10pt 0 2pt; }
+       line-height: 1.5; color: #1a1a1a; margin: 0; }
+h1 { font-size: 21pt; margin: 0 0 3pt; letter-spacing: -.01em; }
+h2 { font-size: 11.5pt; margin: 15pt 0 7pt; padding-bottom: 3pt; border-bottom: 1px solid #bbb;
+     text-transform: uppercase; letter-spacing: .07em; color: #222; }
+h3 { font-size: 11pt; margin: 12pt 0 1pt; }
 p { margin: 4pt 0; }
-ul, ol { margin: 4pt 0; padding-left: 18pt; }
-li { margin: 2pt 0; }
+/* Hanging-indent lists: the marker sits in the gutter and wrapped lines align under the text,
+   not out at the page margin. */
+ul, ol { margin: 6pt 0; padding-left: 0; list-style: none; }
+li { margin: 4pt 0; padding-left: 1.15em; }
+li::before { content: "\\2022"; color: #777; display: inline-block; width: 1.15em;
+             margin-left: -1.15em; }
+ol { counter-reset: li-counter; }
+ol > li { padding-left: 1.5em; }
+ol > li::before { content: counter(li-counter) "."; counter-increment: li-counter; color: #555;
+                  width: 1.5em; margin-left: -1.5em; }
 a { color: #1a1a1a; text-decoration: none; }
-hr { border: none; border-top: 1px solid #ccc; margin: 8pt 0; }
+hr { border: none; border-top: 1px solid #ccc; margin: 9pt 0; }
 strong { font-weight: 600; }
 em { font-style: italic; }
 code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 9.5pt; }
@@ -129,12 +137,18 @@ def markdown_to_html(md: str) -> str:
         if m:
             if list_type != "ul":
                 close_list(); out.append("<ul>"); list_type = "ul"
-            out.append(f"<li>{_inline(m.group(1))}</li>"); i += 1; continue
+            item = [m.group(1)]; i += 1
+            while i < len(lines) and not _is_block_start(lines[i]):
+                item.append(lines[i].strip()); i += 1
+            out.append(f"<li>{_inline(' '.join(item))}</li>"); continue
         m = _OL.match(line)
         if m:
             if list_type != "ol":
                 close_list(); out.append("<ol>"); list_type = "ol"
-            out.append(f"<li>{_inline(m.group(1))}</li>"); i += 1; continue
+            item = [m.group(1)]; i += 1
+            while i < len(lines) and not _is_block_start(lines[i]):
+                item.append(lines[i].strip()); i += 1
+            out.append(f"<li>{_inline(' '.join(item))}</li>"); continue
         close_list()
         para = [line]
         j = i + 1
