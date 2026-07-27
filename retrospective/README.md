@@ -1,13 +1,14 @@
-# Refinement
+# Retrospective
 
 Feedback loop for improving the engine between hunts. After a session, capture **what the tool did
 well, where it misled, and what to change** — focused on *process and the engine*, not the details of
 any one company or application.
 
-Each session drops a dated retrospective here (`YYYY-MM-DD-session-retro.md`).
+Each session drops a timestamped retrospective here (`YYYY-MM-DDTHHMMSS-session-retro.md`) — the time
+component keeps multiple sessions in the same day from colliding.
 
 - **playbook-notes.md** (in the vault) = tactical, mid-hunt: "I hit X, here's the working fix."
-- **refinement/** (here, tracked in the repo) = per-session **observations**: "across this session,
+- **retrospective/** (here, tracked in the repo) = per-session **observations**: "across this session,
   here's what the engine got right, where it misled, what felt off." Travels with the repo.
 
 ## One retro = observations, NOT a fix list
