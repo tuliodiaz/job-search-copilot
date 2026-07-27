@@ -2,7 +2,7 @@
 name: submit-application
 kind: recipe
 last_verified: 2026-07-26
-verified_by: "Trackforce 'Senior Data Engineer' apply form (jobs.lever.co/tracktik/86aea528-0707-4e81-8cc8-8f53fa5b475a/apply) via chrome-devtools-mcp: 58 form controls enumerated; upload_file succeeded directly against input[type=file][name=resume] (visible) — input.files.length 1, hidden resumeStorageId populated with a UUID, UI showed 'Success!'; 10 text fields written by name attribute, all byte-exact (name, email, phone, location, org, urls[LinkedIn|Twitter|GitHub|Portfolio|Other]); confirmed by screenshot; then cleared. Measured traps: <select> option values are ISO codes so assigning the label 'Canada' silently blanked it while selectedIndex worked; input[name=location] left hidden selectedLocation as {\"name\":\"\"}; resume renders '✱' while required=false; SUBMIT APPLICATION is never disabled; hidden h-captcha-response present. Submit deliberately never clicked. Confirmed live 2026-07-26. Re-verified on a second board with employer screening questions — Match Group 'Android Engineer III' (jobs.lever.co/matchgroup/3414ba28-35f7-45d3-8e13-35c883959635/apply), 72 controls: résumé uploaded (resumeStorageId 4558ac22…), 9 text fields by name, and all 5 required cards[<uuid>][fieldN] screening questions answered (4 radios by label text, 1 select by option text + selectedIndex); unanswered required screening controls carried invalid=\"true\" and the count fell to 0 once complete; EEO/pronouns/accommodations left blank; confirmed by full-page screenshot; form left filled, not submitted."
+verified_by: "Trackforce 'Senior Data Engineer' apply form (jobs.lever.co/tracktik/86aea528-0707-4e81-8cc8-8f53fa5b475a/apply) via chrome-devtools-mcp: 58 form controls enumerated; upload_file succeeded directly against input[type=file][name=resume] (visible) — input.files.length 1, hidden resumeStorageId populated with a UUID, UI showed 'Success!'; 10 text fields written by name attribute, all byte-exact (name, email, phone, location, org, urls[LinkedIn|Twitter|GitHub|Portfolio|Other]); confirmed by screenshot; then cleared. Measured traps: <select> option values are ISO codes so assigning the label 'Canada' silently blanked it while selectedIndex worked; input[name=location] left hidden selectedLocation as {\"name\":\"\"}; resume renders '✱' while required=false; SUBMIT APPLICATION is never disabled; hidden h-captcha-response present. Submit deliberately never clicked. Confirmed live 2026-07-26. Re-verified on a second board with employer screening questions — Match Group 'Android Engineer III' (jobs.lever.co/matchgroup/3414ba28-35f7-45d3-8e13-35c883959635/apply), 72 controls: résumé uploaded (resumeStorageId 4558ac22…), 9 text fields by name, and all 5 required cards[<uuid>][fieldN] screening questions answered (4 radios by label text, 1 select by option text + selectedIndex); unanswered required screening controls carried invalid=\"true\" and the count fell to 0 once complete; EEO/pronouns/accommodations left blank; confirmed by full-page screenshot; form left filled, not submitted. Match Group screening blocks were headed ACCOMMODATIONS REQUEST, HINGE - LOCATION, VISA - US and PRONOUNS; the five required questions were: Are you located in the NYC area? · are you open to relocating? · are you willing to come into the office 3 days a week? · Are you authorized to work in the United States? · will you now or in the future require sponsorship?"
 requires: chrome-devtools-mcp (browser MCP) connected
 summary: Fill a Lever application form and hand off to the client to submit
 ---
@@ -55,13 +55,8 @@ Runs **answer → open → upload → fill by name → validate → hand off**.
 5. **Answer the employer's screening questions — `cards[<uuid>][fieldN]`.**
 
    These are the employer's own questions, and they are where the **eligibility and knockout** content
-   lives. Each `<uuid>` is one titled block and `fieldN` is a question within it. Confirmed live
-   2026-07-26 on Match Group: blocks headed `ACCOMMODATIONS REQUEST`, `HINGE - LOCATION`, `VISA - US`
-   and `PRONOUNS`, with **five required** questions —
-
-   > Are you located in the NYC area? · are you open to relocating? · are you willing to come into the
-   > office 3 days a week? · **Are you authorized to work in the United States?** · **will you now or
-   > in the future require sponsorship?**
+   lives — work authorization, sponsorship, location, relocation, on-site willingness. Each `<uuid>`
+   is one titled block and `fieldN` is a question within it.
 
    **Ground every one of these in `logistics.md`.** A wrong work-authorization or sponsorship answer is
    not a typo — it is a false statement to an employer, and on a knockout question it also ends the
@@ -90,7 +85,7 @@ Runs **answer → open → upload → fill by name → validate → hand off**.
    **Do not use the Submit button as a completeness signal**: Lever never disables it, so an enabled
    button means nothing. **Use the invalid flags instead** — unanswered required controls carry
    `invalid="true"` / `aria-invalid="true"`, and that count falling to **0** is the real signal that
-   every required field is satisfied. Verified 2026-07-26.
+   every required field is satisfied.
 
    Finish with a screenshot showing the form visibly populated.
 
@@ -127,7 +122,7 @@ measured behaviour.
 
 Two distinct namespaces carry employer-authored questions, and they mean different things:
 - **`cards[<uuid>][fieldN]`** — the employer's own questions, including **screening and knockout**
-  content. Verified 2026-07-26 on Match Group (5 required across 3 blocks).
+  content.
 - **`surveysResponses[<uuid>][responses][fieldN]`** — the demographic/EEO survey. Observed on both
   verified boards used only for that. A board repurposing this namespace for screening has not been
   seen; if one appears, reconcile carefully rather than assuming it is optional.

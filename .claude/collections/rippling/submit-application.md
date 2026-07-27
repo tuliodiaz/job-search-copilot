@@ -32,9 +32,8 @@ Runs **answer → open → map by order → upload → fill → reconcile → va
 
 3. **Map fields by ORDER, never by name or label.**
    - Field `name` attributes are **randomized per render** (`0i2gk28Yfb`) — useless as identifiers.
-   - Fields have **no label association**: `el.labels` is empty and there is no `aria-labelledby`.
-     A document-order label heuristic **mis-assigns** here — observed 2026-07-26, two long-answer
-     questions both resolved to the first one's title.
+   - Fields have **no label association**: `el.labels` is empty and there is no `aria-labelledby`, so a
+     label heuristic **mis-assigns** (two distinct questions can resolve to one title) — map by order.
 
    Enumerate visible controls in document order and align against the captured schema, which renders
    in the same order: **`basicQuestions` then `additionalQuestions`**, then any un-schema'd controls
@@ -49,21 +48,18 @@ Runs **answer → open → map by order → upload → fill → reconcile → va
    | `SINGLE_SELECT_DROPDOWN`, `KNOCKOUT` | **combobox** — not radios |
    | `FILE` | dropzone button backed by a **hidden `input[type=file]`**, outside the text sequence |
 
-   Verified alignments — the schema differs per board, so reconcile, never assume:
-   - Order.co: 11 `basicQuestions` (2 `FILE`) + `null` additional → 10 visible controls + 2 hidden
-     file inputs.
-   - Dialogue: 10 `basicQuestions` (2 `FILE`) + 3 additional (`KNOCKOUT`, `SHORT_ANSWER`,
-     `SINGLE_SELECT_DROPDOWN`) → 8 text inputs + 4 comboboxes + 2 hidden file inputs, **plus** an
-     un-schema'd radio pair at the end.
+   The schema differs per board, so reconcile the live control count against the captured schema —
+   never assume a fixed set. Account for `PHONE_NUMBER` rendering as two controls, `FILE` as hidden
+   inputs outside the text sequence, and any un-schema'd controls last (step 6).
 
    **If the counts do not reconcile, stop and flag `get-posting` stale.**
 
 4. **Upload files first, before typing anything.** The résumé field states *"The résumé will be parsed
    to fill in the application details"*, so uploading after filling risks overwriting grounded answers.
 
-   The MCP's `upload_file` **fails against the dropzone button** ("could not accept the file directly,
-   and clicking it did not trigger a file chooser"). What works: make the hidden input visible, take a
-   fresh snapshot so it gets a uid, then `upload_file` against **that** uid.
+   The MCP's `upload_file` **fails against the dropzone button** (it does not trigger a file chooser).
+   What works: make the hidden input visible, take a fresh snapshot so it gets a uid, then
+   `upload_file` against **that** uid.
 
    **Verify the attachment by the UI, not the input.** After a successful upload `input.files.length`
    is still **0** — the app moves the file into its own state. The truth is the rendered
@@ -81,13 +77,13 @@ Runs **answer → open → map by order → upload → fill → reconcile → va
    - **The phone field applies a formatting mask** — writing `4155550100` yields `415-555-0100`. A
      byte-equality readback reports a false mismatch on a correct value. It also **strips non-numeric
      input entirely**: writing a URL into it left the field empty.
-   - **URL fields validate** and differ from each other. `https://example.invalid/linkedin` was
-     rejected with "This is an invalid URL."; a real `linkedin.com` URL was accepted.
+   - **URL fields validate.** A placeholder/fake URL is rejected as invalid; the real vault URL is
+     accepted — use the grounded value, not a stand-in.
 
 6. **Reconcile against the live page before validating.** The captured schema is **not** the whole
    form. An **SMS-consent radio pair** present in neither `basicQuestions` nor `additionalQuestions`,
-   and marked with no `*`, appeared on **both** boards checked — on Order.co it blocked `Apply` until
-   answered. Treat un-schema'd controls as expected, not exceptional.
+   and marked with no `*`, can appear on the live form and block `Apply` until answered. Treat
+   un-schema'd controls as expected, not exceptional.
 
    Every live control must resolve to one of:
    - a captured question → fill it from the vault;
@@ -128,7 +124,6 @@ The **EEOC questionnaire** was disabled on every posting checked; if `eeocQuesti
 expect controls this recipe has never seen — and note the survey is the client's own to answer.
 
 ## Must not
-Click Apply · answer a consent, EEOC, or salary-expectation question on the client's behalf · guess a
-**knockout** answer · map a field by `name` or by rendered label · guess a required answer · use
-`fill` / `fill_form` · trust `button.disabled` · trust `input.files` as proof of upload · hand off
-without a screenshot · submit without the client.
+Map a field by `name` or by rendered label · use `fill` / `fill_form` · trust `button.disabled` · trust
+`input.files` as proof of upload · guess a **knockout** answer · answer a consent, EEOC, or
+salary-expectation question on the client's behalf.

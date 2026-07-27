@@ -14,7 +14,7 @@ Capture a **single** Lever role. One HTTP call, no browser.
 Note what this does **not** return: the application form. Lever's API carries the advert, not the
 questions — see *Limits*.
 
-## Inputs
+## Preconditions
 - `slug` — the board token.
 - `posting_id` — the role's **UUID** (from `find-jobs`, or the last path segment of a
   `jobs.lever.co/<slug>/<id>` URL).

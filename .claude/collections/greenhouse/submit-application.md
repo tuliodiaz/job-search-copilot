@@ -2,17 +2,15 @@
 name: submit-application
 kind: recipe
 last_verified: 2026-07-26
-verified_by: "Affirm 'Senior Software Engineer, Full Stack (Zero to One Labs)' (job-boards.greenhouse.io/affirm/jobs/7793217003) via chrome-devtools-mcp: 12/12 text fields written exactly, 6/6 react-select comboboxes set from the API's fields[].values[], 2 EEO questions correctly left blank, all confirmed by screenshot. fill/fill_form measured as unsafe on the same form. Submit deliberately not exercised. Confirmed live 2026-07-26."
+verified_by: "Affirm 'Senior Software Engineer, Full Stack (Zero to One Labs)' (job-boards.greenhouse.io/affirm/jobs/7793217003) via chrome-devtools-mcp: 12/12 text fields written exactly, 6/6 react-select comboboxes set from the API's fields[].values[], 2 EEO questions correctly left blank, all confirmed by screenshot. The rendered form carried 9 select controls: 6 from questions[], 2 from demographic_questions, and a phone-country picker present only in the UI. fill/fill_form measured as unsafe on the same form: fill_form on 15 fields landed 8 and dropped 1-2 leading characters from 6 of them (TESTVALUE -> ESTVALUE); per-field fill produced no-ops and one append instead of a replace; every call returned success. One of the 6 selections failed silently because a prior dropdown was left open, and succeeded on a clean retry. Route check: Anthropic Fellows job-boards.greenhouse.io/anthropic/jobs/5023394008 is an apply-elsewhere stub redirecting to an Airtable form run by its recruiting partner. Submit deliberately not exercised. Confirmed live 2026-07-26."
 requires: chrome-devtools-mcp (browser MCP) connected; the client's own logged-in browser if the form needs auth
 summary: Fill a Greenhouse application form and hand off to the client to submit
 ---
 
 # Recipe: Greenhouse — submit-application
 
-Fill a Greenhouse application form for one role, then **hand the live tab to the client to submit**.
-Runs **route → answer → explore → fill → validate → hand off**. This recipe drives a browser via the
-**chrome-devtools-mcp** tool — it is an adaptive browser procedure, not a script, and it contains no
-custom code.
+Fill a Greenhouse application form for one role via **chrome-devtools-mcp**, then **hand the live tab
+to the client to submit**. Runs **route → answer → explore → fill → validate → hand off**.
 
 ## Preconditions
 - The role is a captured application past the pursue gate, with rendered `docs/` (resume + cover
@@ -20,7 +18,7 @@ custom code.
 - **chrome-devtools-mcp is available.** If it is not, do not improvise a browser driver: tell the
   client, offer to set it up (https://github.com/ChromeDevTools/chrome-devtools-mcp), and fall back to
   **assisted-manual** — give the client the grounded answers + the `docs/` files as a fill-in
-  checklist for their own browser. (§4: hand off rather than guess.)
+  checklist for their own browser.
 
 ## Steps
 
@@ -33,9 +31,8 @@ custom code.
    - **work authorization / immigration sponsorship** → `logistics.md` (the truthful yes/no);
    - résumé / cover letter uploads → the rendered files in `docs/`.
    For each select, take the **legal option labels from the API** (`fields[].values[]`) and choose
-   from them — never invent or approximate an option string.
-   **Never guess a required field.** If a required question cannot be grounded, **stop and hand the
-   live form to the client** — never fabricate an answer.
+   from them — never invent or approximate an option string (react-select matches on the exact label).
+   If a required question cannot be grounded from the vault, hand the live form to the client.
 
 3. **Explore.** Open the role's apply URL in a **headed, client-visible** browser via
    chrome-devtools-mcp. Enumerate the live form's fields, counting only ones that are genuinely
@@ -57,15 +54,12 @@ custom code.
    | select (react-select `input[role=combobox]`) | `focus()`, dispatch bubbling **`mousedown`** to open (it does *not* open on `click`), wait ~400ms, then dispatch `mousedown` on the matching `[role=option]` |
    | file (résumé, cover letter) | set from `docs/`; if the upload cannot be driven, hand it to the client rather than skipping it silently |
 
-   **Do not use the MCP's `fill` / `fill_form` on this form.** Measured 2026-07-26: they dispatch real
-   keystrokes that race the re-render — `fill_form` on 15 fields landed 8 and dropped 1–2 **leading
-   characters** from 6 of those (`TESTVALUE` → `ESTVALUE`); per-field `fill` produced no-ops and one
-   append instead of a replace. **Every call returned success.** A mangled email address is silent and
-   unrecoverable once submitted.
+   **Do not use the MCP's `fill` / `fill_form` on this form.** They dispatch real keystrokes that race
+   the re-render, dropping **leading characters** and producing no-op/append writes — and **every call
+   still returns success**, so a mangled email is silent and unrecoverable once submitted.
 
    **Close each dropdown before opening the next.** An open dropdown swallows the next one's open
-   event — observed 2026-07-26: one of six selections failed silently for this reason and succeeded on
-   a clean retry.
+   event, and the second selection fails silently.
 
 6. **Validate by readback — and by screenshot.** Re-read **the same element you wrote**; confirm each
    required field is non-empty and matches the intended grounded answer. Then **screenshot the filled
@@ -90,8 +84,3 @@ Verified as far as **rendered form state**. That the values reach Greenhouse's s
 confirmed, because confirming it means submitting a real application — treat that last hop as proven
 only after a real application goes through. **File upload is untested**; `chrome-devtools-mcp` exposes
 `upload_file`, so verify it before relying on it and be ready to hand the upload to the client.
-
-## Must not
-Click Submit · fill the EEO / demographic survey · guess a required answer · skip a required question ·
-fabricate a work-authorization answer · use `fill` / `fill_form` · hand off on a readback without a
-screenshot · submit without the client.
