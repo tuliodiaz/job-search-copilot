@@ -1,0 +1,24 @@
+# Canonical shape of the lead registry (lives at vault/leads-registry.yaml).
+#
+# A triage layer: candidate roles surfaced by a board sweep, before any of them is an application.
+# It keeps what was already looked at — and why it was discarded — so a later sweep surfaces only
+# what changed. This is a CACHE, rebuildable from the boards; once a lead is captured, its
+# application folder is the truth and the row only points at it.
+#
+# ENGINE REFERENCE, not vault scaffolding — it lives under .claude/config/ so it is NEVER copied into
+# a client's vault. The registry itself is scaffolded from .claude/templates/leads-registry.yaml.
+schema_version: 1
+
+leads: []
+# each lead:
+#   id: ""              # <company-slug>-<board job id>; the dedupe key across sweeps
+#   company: ""         # company slug (the companies/<slug>/ folder key, once it has one)
+#   role: ""            # title as listed
+#   url: ""             # link to the posting
+#   status: "new"       # new | investigating | captured | discarded
+#   quick_fit: 0        # 0-100 triage band (NOT a fit-assessor score — different pass, not comparable)
+#   provenance: ""      # recalled (a search card) | verified (re-fetched at the employer's ATS)
+#   verified_on: ""     # ISO date the row's facts were last obtained
+#   verified_by: ""     # the exact call/search that returned it
+#   reason: ""          # why discarded, or what is still open
+#   app_folder: ""      # set by capture-posting once the lead becomes an application

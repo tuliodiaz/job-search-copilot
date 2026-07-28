@@ -208,6 +208,7 @@ def check_templates_and_config() -> None:
         ".claude/templates/profile/preferences.md",
         ".claude/templates/profile/logistics.md",
         ".claude/templates/company-registry.yaml",
+        ".claude/templates/leads-registry.yaml",
         ".claude/templates/playbook-notes.md",
         ".claude/config/status.schema.yaml",
         ".claude/config/defaults.yaml",
@@ -218,6 +219,7 @@ def check_templates_and_config() -> None:
             fail(f"missing required engine file: {r}")
     for r in [".claude/config/defaults.yaml",
               ".claude/templates/company-registry.yaml",
+              ".claude/templates/leads-registry.yaml",
               ".claude/config/status.schema.yaml"]:
         p = os.path.join(ROOT, r)
         if os.path.isfile(p) and "schema_version" not in read(p):
@@ -230,10 +232,10 @@ def check_templates_are_vault_only() -> None:
     """`.claude/templates/` is copied verbatim into the client's vault by onboard, so it must contain
     ONLY vault-appropriate scaffolding. Anything else (engine reference, schemas, docs) would leak
     into every client's private vault. The vault's only top-level entities are profile/, companies/,
-    recruiters/, company-registry.yaml, playbook-notes.md."""
+    recruiters/, company-registry.yaml, leads-registry.yaml, playbook-notes.md."""
     base = os.path.join(CLAUDE, "templates")
     allowed = {"profile", "companies", "recruiters",
-               "company-registry.yaml", "playbook-notes.md"}
+               "company-registry.yaml", "leads-registry.yaml", "playbook-notes.md"}
     if os.path.isdir(base):
         for entry in sorted(os.listdir(base)):
             if entry.startswith("."):

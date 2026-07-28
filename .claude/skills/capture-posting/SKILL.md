@@ -4,7 +4,7 @@ kind: skill
 requires: python3 (standard library only)
 summary: Capture one posting (URL or file) as an application at stage=lead, scanned on capture
 reads: the source posting (URL or file); the relevant collection's platform knowledge
-writes: the application folder — posting.raw.html, posting.md, status.yaml (stage -> lead)
+writes: the application folder — posting.raw.html, posting.md, status.yaml (stage -> lead); the matching lead-registry row
 ---
 
 # Skill: capture-posting
@@ -90,6 +90,12 @@ influence). **Pending verification:** the collision / re-capture path (step 4).
      recorded once in step 2.
    Use the one company-slug canonicalizer for `<company>` so the same company always resolves to the
    same folder.
+
+6. **Close the loop with the lead registry.** If `vault/leads-registry.yaml` exists and holds a row
+   for this posting (match on the board's job id, else company + role), set its `status: captured`
+   and its `app_folder` to the folder just written — but never its stage, which the row reads from
+   the folder. No matching row (a posting the client brought in directly) → nothing to do; do not
+   invent one.
 
 ## Self-check (validate by readback)
 Before reporting done, re-read the application folder and confirm: `posting.raw.html` is non-empty;

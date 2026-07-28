@@ -1,0 +1,6 @@
+# Candidate roles surfaced by a board sweep, before any of them is an application.
+# A triage layer: it keeps what was already looked at (and why it was discarded) so a later sweep
+# surfaces only what changed. This is a CACHE. Once a lead is captured, its application folder
+# (companies/<company>/applications/<role--date>/) is the truth and the row only points at it.
+schema_version: 1
+leads: []
